@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Calque_1" data-name="Calque 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 194.71 49.51">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #752376;
+      }
+
+      .cls-2 {
+        fill: #c12686;
+      }
+
+      .cls-3 {
+        fill: #fdeae2;
+      }
+
+      .cls-4 {
+        fill: #f8c4c0;
+      }
+
+      .cls-5 {
+        fill: #ec68a0;
+      }
+
+      .cls-6 {
+        fill: #1d1d1b;
+        font-family: OpenSans-Light, 'Open Sans';
+        font-size: 9px;
+        font-weight: 300;
+      }
+
+      .cls-7 {
+        fill: #efefef;
+      }
+
+      .cls-8 {
+        fill: #f29db4;
+      }
+    </style>
+  </defs>
+  <g>
+    <rect class="cls-7" y="37.67" width="24.22" height="10" rx="5" ry="5"/>
+    <text class="cls-6" transform="translate(28.07 47.09)"><tspan x="0" y="0">No Data</tspan></text>
+  </g>
+  <g>
+    <path class="cls-3" d="M6.33,0h27.33v10H6.33c-2.76,0-5-2.24-5-5h0C1.33,2.24,3.57,0,6.33,0Z"/>
+    <rect class="cls-4" x="33.66" width="32.33" height="10"/>
+    <rect class="cls-8" x="66" width="32.33" height="10"/>
+    <rect class="cls-5" x="98.33" width="32.33" height="10"/>
+    <rect class="cls-2" x="130.66" width="32.33" height="10"/>
+    <path class="cls-1" d="M162.38,0h27.33C192.47,0,194.71,2.24,194.71,5h0c0,2.76-2.24,5-5,5h-27.33V0h0Z"/>
+    <text class="cls-6" transform="translate(30.07 22.58)"><tspan x="0" y="0">0</tspan></text>
+    <text class="cls-6" transform="translate(58.15 22.58)"><tspan x="0" y="0">100</tspan></text>
+    <text class="cls-6" transform="translate(91.37 22.68)"><tspan x="0" y="0">200</tspan></text>
+    <text class="cls-6" transform="translate(124.58 22.58)"><tspan x="0" y="0">400</tspan></text>
+    <text class="cls-6" transform="translate(157.8 22.58)"><tspan x="0" y="0">600</tspan></text>
+  </g>
+</svg>
