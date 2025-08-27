@@ -189,7 +189,7 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
         }}
       >
         <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'bold', fontSize: '20px' }}>
-          REAL ESTATE SITUATION IN NYC
+          REAL ESTATE IN NYC
         </p>
         <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: '20px' }}>
           Increase in real estate prices (%) 2003-2023
