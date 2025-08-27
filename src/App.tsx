@@ -11,19 +11,19 @@ import type { Feature, Geometry } from 'geojson';
 export const COLOR_SCALE = scaleThreshold<number, Color>()
   .domain([100, 200, 300, 500, 800])
   .range([
-    [254,235,226],
-    [252,197,192],
-    [250,159,181],
-    [247,104,161],
-    [197,27,138],
-    [122,1,119]
+    [254, 235, 226],
+    [252, 197, 192],
+    [250, 159, 181],
+    [247, 104, 161],
+    [197, 27, 138],
+    [122, 1, 119]
   ]);
 
 // Gestion du blanc si pas de valeur
 export const getFillColor = (d: number | null | undefined): Color =>
   d == null ? [255, 255, 255] : COLOR_SCALE(d);
 
-const INITIAL_VIEW_STATE: {main: MapViewState; minimap: MapViewState} = {
+const INITIAL_VIEW_STATE: { main: MapViewState; minimap: MapViewState } = {
   main: {
     latitude: 40.7128,
     longitude: -74.0060,
@@ -42,7 +42,12 @@ const INITIAL_VIEW_STATE: {main: MapViewState; minimap: MapViewState} = {
 const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json';
 
 const ambientLight = new AmbientLight({ color: [255, 255, 255], intensity: 1.0 });
-const dirLight = new SunLight({ timestamp: Date.UTC(2019, 7, 1, 14), color: [255, 255, 255], intensity: 1.0, _shadow: true });
+const dirLight = new SunLight({
+  timestamp: Date.UTC(2019, 7, 1, 14),
+  color: [255, 255, 255],
+  intensity: 1.0,
+  _shadow: true
+});
 
 const landCover: Position[][] = [[
   [-74.2591, 40.4774],
@@ -52,13 +57,18 @@ const landCover: Position[][] = [[
   [-74.2591, 40.4774]
 ]];
 
-function getTooltip({ object }: PickingInfo<Feature<Geometry, any>>) {
-  return object && {
+// getTooltip sécurisé pour TypeScript
+function getTooltip({ object }: PickingInfo<Feature<Geometry, any> | null>) {
+  if (!object) return null;
+  const props = 'properties' in object ? object.properties : object;
+  if (!props) return null;
+
+  return {
     html: `
-      <div style="color: white; font-weight: bold; font-size: 18px">${object.properties["County_min"]}</div>
-      <div style="color: white; font-weight: normal;">${object.properties["Name_min"]}</div>
+      <div style="color: white; font-weight: bold; font-size: 18px">${props["County_min"] ?? ''}</div>
+      <div style="color: white; font-weight: normal;">${props["Name_min"] ?? ''}</div>
       <div style="color: lightgray;"><b>Median sales values:</b></div>
-      <div style="color: lightgray;">$${object.properties["price_median"].toLocaleString()} USD</div>
+      <div style="color: lightgray;">$${props["price_median"]?.toLocaleString() ?? 'N/A'} USD</div>
     `
   };
 }
@@ -108,7 +118,7 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
       opacity: 0.8,
       stroked: false,
       filled: true,
-      extruded: true,      // extrusion pour carte principale
+      extruded: true,
       wireframe: true,
       getElevation: f => Math.sqrt(f.properties["price_median"]) * 2,
       getFillColor: f => getFillColor(f.properties["TAUG2"]),
@@ -131,7 +141,7 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
       data,
       stroked: false,
       filled: true,
-      extruded: false,       // pas d'extrusion pour mini-map
+      extruded: false,
       wireframe: false,
       getFillColor: f => getFillColor(f.properties["TAUG2"]),
       pickable: false
@@ -165,15 +175,14 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
         <Map reuseMaps mapStyle={mapStyle} />
       </DeckGL>
 
-      {/* Légende SVG */}
+      {/* Légende */}
       <div
         style={{
           position: "absolute",
           top: 30,
           left: 30,
           backgroundColor: "white",
-          paddingLeft: "15px",
-          paddingRight: "15px",
+          padding: "15px",
           borderRadius: "5px",
           boxShadow: "0 0 5px rgba(0,0,0,0.3)",
           zIndex: 1000
@@ -185,17 +194,14 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
         <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: '20px' }}>
           Increase in real estate prices (%) 2003-2023
         </p>
-
         <img
           src="/export.svg"
           alt="Legend"
           style={{ display: "block", width: "350px", height: "auto" }}
         />
-
-        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: '12px', paddingTop: '35px', paddingBottom: '0px' }}>
+        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: '12px', paddingTop: '35px' }}>
           Source: NYC Open Data, Zillow
         </p>
-
       </div>
 
       {/* MiniMap */}
