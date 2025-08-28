@@ -19,7 +19,6 @@ export const COLOR_SCALE = scaleThreshold<number, Color>()
     [122, 1, 119]
   ]);
 
-// Gestion du blanc si pas de valeur
 export const getFillColor = (d: number | null | undefined): Color =>
   d == null ? [255, 255, 255] : COLOR_SCALE(d);
 
@@ -57,7 +56,6 @@ const landCover: Position[][] = [[
   [-74.2591, 40.4774]
 ]];
 
-// getTooltip sécurisé pour TypeScript
 function getTooltip({ object }: PickingInfo<Feature<Geometry, any> | null>) {
   if (!object) return null;
   const props = 'properties' in object ? object.properties : object;
@@ -79,7 +77,7 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
 
   // Chargement du GeoJSON local
   useEffect(() => {
-    fetch('./data/USA3.geojson')
+    fetch('./data/USA.geojson')
       .then(res => res.json())
       .then(geojson => setData(geojson.features));
   }, []);
@@ -103,7 +101,7 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
 
   if (!data) return <div>Loading...</div>;
 
-  // Layers carte principale (3D)
+  // Layers carte principale (3D) avec animation d'extrusion
   const layers = [
     new PolygonLayer<Position[]>({
       id: 'ground',
@@ -116,6 +114,7 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
       id: 'geojson',
       data,
       opacity: 0.8,
+      
       stroked: false,
       filled: true,
       extruded: true,
@@ -123,11 +122,13 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
       getElevation: f => Math.sqrt(f.properties["price_median"]) * 2,
       getFillColor: f => getFillColor(f.properties["TAUG2"]),
       getLineColor: [255, 255, 255],
-      pickable: true
+      pickable: true,
+      transitions: {
+        getElevation: 2000 // animation 2s pour l’extrusion
+      }
     })
   ];
 
-  // Layers mini-map (2D)
   const minimapLayers = [
     new PolygonLayer<Position[]>({
       id: 'ground-minimap',
@@ -150,12 +151,13 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
 
   const minimapStyle: React.CSSProperties = {
     position: 'absolute',
-    bottom: 10,
-    right: 10,
-    width: '300px',
-    height: '300px',
-    border: '0px solid rgba(0,0,0,0.3)',
-    borderRadius: '5px',
+    bottom: '2%',
+    right: '2%',
+    width: '15vw',
+    height: '15vw',
+    maxWidth: '300px',
+    maxHeight: '300px',
+    borderRadius: '0rem',
     overflow: 'hidden',
     boxShadow: '0 0 10px 2px rgba(0,0,0,0.15)',
     zIndex: 1000
@@ -175,36 +177,39 @@ export default function App({ mapStyle = MAP_STYLE }: { mapStyle?: string }) {
         <Map reuseMaps mapStyle={mapStyle} />
       </DeckGL>
 
-      {/* Légende */}
+      {/* Légende responsive */}
       <div
         style={{
           position: "absolute",
-          top: 30,
-          left: 30,
+          top: "2%",
+          left: "2%",
           backgroundColor: "white",
-          padding: "15px",
-          borderRadius: "5px",
+          padding: "1rem",
+          borderRadius: "0rem",
           boxShadow: "0 0 5px rgba(0,0,0,0.3)",
-          zIndex: 1000
+          zIndex: 1000,
+          maxWidth: "30vw",
+          transform: "scale(0.75)",
+          transformOrigin: "top left"
         }}
       >
-        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'bold', fontSize: '20px' }}>
+        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'bold', fontSize: 'clamp(14px, 2vw, 20px)' }}>
           REAL ESTATE IN NYC
         </p>
-        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: '20px' }}>
+        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: 'clamp(12px, 1.8vw, 18px)' }}>
           Increase in real estate prices (%) 2003-2023
         </p>
         <img
           src="/export.svg"
           alt="Legend"
-          style={{ display: "block", width: "350px", height: "auto" }}
+          style={{ display: "block", width: "100%", height: "auto" }}
         />
-        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: '12px', paddingTop: '35px' }}>
+        <p style={{ fontFamily: 'Open Sans, sans-serif', fontWeight: 'normal', fontSize: 'clamp(10px, 1.2vw, 12px)', paddingTop: '1rem' }}>
           Source: NYC Open Data, Zillow
         </p>
       </div>
 
-      {/* MiniMap */}
+      {/* MiniMap responsive */}
       <div style={minimapStyle}>
         <DeckGL
           layers={minimapLayers}
